@@ -1,6 +1,0 @@
-@SharePointIntegrationApi_HostAddress = http://localhost:5170
-
-GET {{SharePointIntegrationApi_HostAddress}}/weatherforecast/
-Accept: application/json
-
-###
