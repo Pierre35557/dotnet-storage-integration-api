@@ -1,0 +1,22 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <TargetFramework>net9.0</TargetFramework>
+    <ImplicitUsings>enable</ImplicitUsings>
+    <Nullable>enable</Nullable>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <PackageReference Include="Azure.Identity" Version="1.17.0" />
+    <PackageReference Include="Microsoft.Graph" Version="5.96.0" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Folder Include="Documentation\" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\StorageIntegrationApi.Application\StorageIntegrationApi.Application.csproj" />
+  </ItemGroup>
+
+</Project>
