@@ -8,6 +8,9 @@ namespace StorageIntegrationApi.Api.Middleware
         private readonly RequestDelegate _next;
         private readonly ILogger<ApiResponseMiddleware> _logger;
 
+        private const string ApiKeyHeaderName = "x-api-key";
+        private const string ClientIdHeaderName = "x-system-client-id";
+
         public ApiResponseMiddleware(RequestDelegate next, ILogger<ApiResponseMiddleware> logger)
         {
             _next = next;
@@ -27,6 +30,7 @@ namespace StorageIntegrationApi.Api.Middleware
 
             try
             {
+                ValidateClient(context);
                 await _next(context);
             }
             catch (Exception ex)
@@ -54,10 +58,42 @@ namespace StorageIntegrationApi.Api.Middleware
             }
         }
 
+        private static void ValidateClient(HttpContext context)
+        {
+            if (!context.Request.Headers.TryGetValue(ClientIdHeaderName, out var clientId) ||
+                string.IsNullOrWhiteSpace(clientId))
+            {
+                throw new UnauthorizedAccessException("x-system-client-id header is missing.");
+            }
+
+            if (!context.Request.Headers.TryGetValue(ApiKeyHeaderName, out var providedKey) ||
+                string.IsNullOrWhiteSpace(providedKey))
+            {
+                throw new UnauthorizedAccessException("x-api-key header is missing.");
+            }
+
+            var normalizedClientId = clientId.ToString().Trim().ToUpper();
+            var expectedKey = Environment.GetEnvironmentVariable($"CLIENT_API_KEY_{normalizedClientId}");
+
+            if (string.IsNullOrWhiteSpace(expectedKey))
+                throw new UnauthorizedAccessException("No API key configured for this client.");
+
+            if (!string.Equals(providedKey.ToString(), expectedKey, StringComparison.Ordinal))
+                throw new UnauthorizedAccessException("Invalid API key for this client.");
+
+            context.Items["ClientId"] = normalizedClientId;
+        }
+
         private static (int statusCode, string message, IEnumerable<string>? errors) MapExceptionToResponse(Exception ex)
         {
             return ex switch
             {
+                UnauthorizedAccessException => (
+                    StatusCodes.Status401Unauthorized,
+                    "Unauthorized Access.",
+                    new[] { ex.Message }
+                ),
+
                 InvalidOperationException => (
                     StatusCodes.Status400BadRequest,
                     "The requested operation is invalid.",
