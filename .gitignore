@@ -97,6 +97,7 @@ packages/
 
 .env
 *.env.local
+dev.env
 secrets.json
 appsettings.*.local.json
 appsettings.Development.json   # optional: include in git if you want

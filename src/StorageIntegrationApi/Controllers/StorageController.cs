@@ -12,7 +12,7 @@ namespace StorageIntegrationApi.Api.Controllers
     /// </summary>
     [ApiController]
     [Produces("application/json")]
-    [Route("api/storage")]
+    [Route("storage")]
     public class StorageController : ControllerBase
     {
         private readonly IStorageService _service;
