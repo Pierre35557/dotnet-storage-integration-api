@@ -1,4 +1,5 @@
 ﻿using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.RateLimiting;
 using StorageIntegrationApi.Api.Factories;
 using StorageIntegrationApi.Api.Models;
 using StorageIntegrationApi.Application.Dtos;
@@ -11,8 +12,9 @@ namespace StorageIntegrationApi.Api.Controllers
     /// (e.g., SharePoint, Azure, etc.).
     /// </summary>
     [ApiController]
-    [Produces("application/json")]
     [Route("storage")]
+    [Produces("application/json")]
+    [EnableRateLimiting("default")]
     public class StorageController : ControllerBase
     {
         private readonly IStorageService _service;
@@ -54,6 +56,7 @@ namespace StorageIntegrationApi.Api.Controllers
         /// Returns an <see cref="ApiErrorResponse"/> if the operation fails.
         /// </response>
         [HttpPost("directories")]
+        [EnableRateLimiting("heavy")]
         [Consumes("application/json")]
         [ProducesDefaultResponseType(typeof(ApiErrorResponse))]
         [ProducesResponseType(typeof(ApiSuccessResponse<string?>), StatusCodes.Status200OK)]
