@@ -1,0 +1,9 @@
+**/bin/
+**/obj/
+.vscode/
+*.user
+*.suo
+*.csproj.user
+*.db
+*.md
+*.TestResults/
