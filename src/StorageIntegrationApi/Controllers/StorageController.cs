@@ -12,7 +12,7 @@ namespace StorageIntegrationApi.Api.Controllers
     /// (e.g., SharePoint, Azure, etc.).
     /// </summary>
     [ApiController]
-    [Route("api/storage")]
+    [Route("storage")]
     [Produces("application/json")]
     [EnableRateLimiting("default")]
     public class StorageController : ControllerBase
